@@ -1,0 +1,29 @@
+<?php
+include 'config.php';
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM users WHERE email='$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['name'] = $user['name'];
+            echo "<h3>✅ Login successful!</h3>";
+            echo "<a href='index.html'>Go to your account</a>";
+        } else {
+            echo "<h3>❌ Wrong password!</h3>";
+            echo "<a href='login.html'>Try again</a>";
+        }
+    } else {
+        echo "<h3>❌ No account found with that email!</h3>";
+        echo "<a href='sign.html'>Register here</a>";
+    }
+}
+?>

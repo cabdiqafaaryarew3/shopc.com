@@ -1,0 +1,77 @@
+<?php
+session_start();
+include 'config.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.html");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// Fetch user info from database
+$sql = "SELECT name, street, home, zone FROM users WHERE id = $user_id";
+$result = $conn->query($sql);
+$user = $result->fetch_assoc();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopC - Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #246, #579);
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .logout {
+      background: #ff4444;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .logout:hover {
+      background: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>👋 Welcome, <?php echo htmlspecialchars($user['name']); ?>!</h2>
+    <p><strong>Street:</strong> <?php echo htmlspecialchars($user['street']); ?></p>
+    <p><strong>Home:</strong> <?php echo htmlspecialchars($user['home']); ?></p>
+    <p><strong>Zone:</strong> <?php echo htmlspecialchars($user['zone']); ?></p>
+
+    <p><a href="store.html">🛒 Go to ShopC Products</a></p>
+    <form action="logout.php" method="post">
+      <button type="submit" class="logout">Logout</button>
+    </form>
+  </div>
+</body>
+</html>
